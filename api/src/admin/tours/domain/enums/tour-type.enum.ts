@@ -1,0 +1,4 @@
+export enum TourType {
+  DOMESTIC = 'DOMESTIC',
+  INTERNATIONAL = 'INTERNATIONAL',
+}

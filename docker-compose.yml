@@ -1,0 +1,66 @@
+services:
+  nginx:
+    image: nginx:stable-alpine
+    container_name: travel-booking-nginx
+    ports:
+      - '${NGINX_PORT:-8080}:80'
+    volumes:
+      - ./.docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - api
+    networks:
+      - travel-booking
+
+  api:
+    build:
+      context: ./api
+      dockerfile: ../.docker/node/Dockerfile.dev
+    container_name: travel-booking-api
+    env_file:
+      - .env
+    environment:
+      - PORT=3000
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USERNAME=${MYSQL_USER}
+      - DB_PASSWORD=${MYSQL_PASSWORD}
+      - DB_DATABASE=${MYSQL_DATABASE}
+    volumes:
+      - ./api:/app
+      - /app/node_modules
+    ports:
+      - '${APP_PORT:-3000}:3000'
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - travel-booking
+
+  mysql:
+    image: mysql:8.0
+    container_name: travel-booking-mysql
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    ports:
+      - '${MYSQL_PORT:-3306}:3306'
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./.docker/mysql/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'root', '-p${MYSQL_ROOT_PASSWORD}']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - travel-booking
+
+networks:
+  travel-booking:
+    driver: bridge
+
+volumes:
+  mysql-data:
