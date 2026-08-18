@@ -1,4 +1,36 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateTourDto } from './create-tour.dto';
+import { IsEnum, IsInt, IsOptional, IsString, Min } from 'class-validator';
 
-export class UpdateTourDto extends PartialType(CreateTourDto) {}
+import { TourType } from '@/admin/tours/domain/enums';
+
+export class UpdateTourDto {
+  @IsString()
+  @IsOptional()
+  name?: string;
+
+  /** `undefined` = leave unchanged, `null` = clear the field. */
+  @IsString()
+  @IsOptional()
+  shortDescription?: string | null;
+
+  @IsString()
+  @IsOptional()
+  description?: string | null;
+
+  @IsString()
+  @IsOptional()
+  categoryId?: string | null;
+
+  @IsEnum(TourType)
+  @IsOptional()
+  type?: TourType;
+
+  @IsInt()
+  @Min(1)
+  @IsOptional()
+  durationDays?: number;
+
+  @IsInt()
+  @Min(0)
+  @IsOptional()
+  durationNights?: number;
+}

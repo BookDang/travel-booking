@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseFilters } from '@nestjs/common';
 import {
   CreateTourUseCase,
   GetTourUseCase,
@@ -9,8 +9,10 @@ import {
   UpdateTourUseCase,
 } from '@/admin/tours/application/use-cases';
 import { CreateTourDto, UpdateTourDto } from '@/admin/tours/presentation/dto';
+import { TourDomainExceptionFilter } from '@/admin/tours/presentation/filters';
 
 @Controller('tours')
+@UseFilters(TourDomainExceptionFilter)
 export class ToursController {
   constructor(
     private readonly createTourUseCase: CreateTourUseCase,

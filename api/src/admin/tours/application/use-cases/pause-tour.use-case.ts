@@ -1,6 +1,5 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { Tour } from '@/admin/tours/domain/entities';
-import { TourStatus } from '@/admin/tours/domain/enums';
 import { TOUR_REPOSITORY, type TourRepository } from '@/admin/tours/domain/repositories';
 
 @Injectable()
@@ -12,6 +11,7 @@ export class PauseTourUseCase {
     if (!tour) {
       throw new NotFoundException(`Tour #${id} not found`);
     }
-    return this.tourRepository.update(id, { status: TourStatus.PAUSED });
+    tour.pause();
+    return this.tourRepository.update(tour);
   }
 }

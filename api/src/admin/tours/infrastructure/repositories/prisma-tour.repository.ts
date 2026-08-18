@@ -3,10 +3,11 @@ import { Tour } from '@/admin/tours/domain/entities';
 import { TourRepository } from '@/admin/tours/domain/repositories';
 
 // Scaffold only: wire up @prisma/client once Prisma + a Tour model are set up.
+// Use TourMapper (infrastructure/mappers) to convert between Tour and the Prisma row shape.
 @Injectable()
 export class PrismaTourRepository implements TourRepository {
-  create(data: Partial<Tour>): Promise<Tour> {
-    void data;
+  create(tour: Tour): Promise<Tour> {
+    void tour;
     throw new Error('PrismaTourRepository.create not implemented yet');
   }
 
@@ -19,9 +20,8 @@ export class PrismaTourRepository implements TourRepository {
     throw new Error('PrismaTourRepository.findOne not implemented yet');
   }
 
-  update(id: string, data: Partial<Tour>): Promise<Tour> {
-    void id;
-    void data;
+  update(tour: Tour): Promise<Tour> {
+    void tour;
     throw new Error('PrismaTourRepository.update not implemented yet');
   }
 

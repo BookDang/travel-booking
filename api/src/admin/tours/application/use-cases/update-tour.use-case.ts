@@ -12,6 +12,7 @@ export class UpdateTourUseCase {
     if (!tour) {
       throw new NotFoundException(`Tour #${id} not found`);
     }
-    return this.tourRepository.update(id, dto);
+    tour.updateDetails(dto);
+    return this.tourRepository.update(tour);
   }
 }
