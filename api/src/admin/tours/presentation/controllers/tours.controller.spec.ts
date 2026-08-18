@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import {
   CreateTourUseCase,
   GetTourUseCase,
@@ -8,6 +9,7 @@ import {
   RemoveTourUseCase,
   UpdateTourUseCase,
 } from '@/admin/tours/application/use-cases';
+
 import { ToursController } from './tours.controller';
 
 describe('ToursController', () => {

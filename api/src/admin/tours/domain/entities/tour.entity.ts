@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+
 import { TourStatus, TourType } from '@/admin/tours/domain/enums';
 import {
   InvalidTourDetailsError,

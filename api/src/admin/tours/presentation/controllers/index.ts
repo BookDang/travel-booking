@@ -1,2 +1,1 @@
-// Placeholder barrel — populate once controller files move in here.
-export {};
+export * from './tours.controller';

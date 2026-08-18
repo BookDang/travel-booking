@@ -1,2 +1,2 @@
-// Placeholder barrel — populate once request DTOs move in here.
-export {};
+export * from './create-tour.dto';
+export * from './update-tour.dto';

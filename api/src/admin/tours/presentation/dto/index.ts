@@ -1,2 +1,2 @@
-export * from './create-tour.dto';
-export * from './update-tour.dto';
+export * from './requests';
+export * from './responses';

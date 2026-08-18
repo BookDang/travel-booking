@@ -1,4 +1,5 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+
 import { TOUR_REPOSITORY, type TourRepository } from '@/admin/tours/domain/repositories';
 
 @Injectable()

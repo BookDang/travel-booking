@@ -97,6 +97,13 @@ async execute(id: string): Promise<Tour> {
 }
 ```
 
+A use-case's public input type is a **domain** type (e.g. `TourCreateProps`), never a
+`presentation/dto` class — even though the DTO is what a controller actually passes in. The
+controller's DTO happens to satisfy the domain type structurally, so nothing breaks; but if a
+use-case imports a class straight out of `presentation/dto`, `application/` now depends on
+`presentation/`, backwards from the intended direction. `npm run check:boundaries` (see
+"Enforcement" below) catches this automatically.
+
 ### `infrastructure/` — technical implementation
 
 Where `domain/` interfaces meet real technology.
@@ -161,3 +168,36 @@ Sits outside the 4 layers. Registers the controller and use-cases as providers, 
 - Every folder gets an `index.ts` barrel, except the 4 top-level layer folders themselves.
 
 See `CLAUDE.md` for the full rules.
+
+## Enforcement
+
+`npm run check:boundaries` runs [dependency-cruiser](https://github.com/sverweij/dependency-cruiser)
+against `.dependency-cruiser.cjs`, which encodes the layer rules above as import-graph checks
+(e.g. `domain/` may not import `application|infrastructure|presentation`). Biome's
+`noRestrictedImports` only enforces the `@/` alias style — it doesn't know which layer is allowed
+to import which. This is the tool that does.
+
+This isn't just theoretical: the first run of this check caught `application/use-cases` importing
+DTO classes from `presentation/dto` (the use-cases were typed to accept `CreateTourDto` directly
+instead of the domain's own `TourCreateProps`). That's a real backwards dependency — fixed by
+typing use-case inputs against domain props instead.
+
+## Known gaps / deferred decisions
+
+Decisions made on purpose, not oversights — recorded here so they don't get "fixed" by accident
+and don't get silently forgotten either.
+
+- **No unit-of-work / cross-repository transactions yet.** Every use-case here touches exactly
+  one `Tour` through one repository call, so there's nothing to wrap in a transaction. Once a
+  use-case needs to change more than one aggregate atomically (e.g. create a tour and its default
+  itinerary together), introduce a `UnitOfWork` interface in `domain/` and implement it with
+  `prisma.$transaction()` in `infrastructure/` — don't build it before a real caller needs it.
+- **Field lists are duplicated across layers** (`TourCreateProps` in domain, `CreateTourDto` in
+  presentation, eventually a Prisma model in infrastructure). This is an accepted cost of keeping
+  the layers decoupled, not a bug to "solve" by having one layer's type derive from another's —
+  in particular, domain types must never be derived from Prisma's generated types, since that
+  would make `domain/` depend on `infrastructure/`, exactly the dependency direction this whole
+  document argues against. What already guards against drift for free: `Tour.create(dto)` and
+  `tour.updateDetails(dto)` are called with the actual DTO instances, so `tsc --noEmit` fails at
+  the call site the moment a required domain field goes missing from a DTO. No extra code needed
+  for that part of the boundary.

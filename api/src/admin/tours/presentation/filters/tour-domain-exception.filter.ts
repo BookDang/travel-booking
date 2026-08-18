@@ -1,5 +1,6 @@
 import type { ArgumentsHost, ExceptionFilter } from '@nestjs/common';
 import { Catch, HttpStatus } from '@nestjs/common';
+
 import { InvalidTourStateTransitionError, TourDomainError } from '@/admin/tours/domain/errors';
 
 @Catch(TourDomainError)
