@@ -68,7 +68,7 @@
             "patterns": [
               {
                 "group": ["../**", "./*/**"],
-                "message": "Use the '@/' path alias instead of relative imports into another folder (e.g. '@/admin/tours/domain/entities'). Relative imports are only allowed for a sibling file in the same folder."
+                "message": "Use the '@/' path alias instead of relative imports into another folder (e.g. '@/<module>/domain/entities'). Relative imports are only allowed for a sibling file in the same folder."
               }
             ]
           }

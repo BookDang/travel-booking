@@ -5,8 +5,8 @@
 ## api/ (NestJS)
 
 - No relative imports across folders (`../foo`, `./sub/foo`). Use the `@/` path alias instead
-  (e.g. `@/admin/tours/domain/entities`), which maps to `api/src/*`. A relative import is only
-  allowed between two files in the exact same folder (e.g. `./create-tour.dto`).
+  (e.g. `@/<module>/domain/entities`), which maps to `api/src/*`. A relative import is only
+  allowed between two files in the exact same folder (e.g. `./create-x.dto`).
   Enforced by the `style/noRestrictedImports` rule in `api/biome.json`.
 - Every folder gets an `index.ts` barrel re-exporting its files, except the 4 top-level DDD
   layer folders themselves (`domain/`, `application/`, `infrastructure/`, `presentation/`) —

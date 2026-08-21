@@ -30,7 +30,7 @@ module.exports = {
     {
       name: 'presentation-must-not-depend-on-infrastructure',
       comment:
-        'presentation/ talks to application/ (use-cases) and domain/ (types) only — never straight to Prisma etc.',
+        'presentation/ talks to application/ (use-cases) and domain/ (types) only — never straight to the infrastructure layer.',
       severity: 'error',
       from: { path: '^src/.*/presentation/' },
       to: { path: '^src/.*/infrastructure/' },
